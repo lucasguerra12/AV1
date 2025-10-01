@@ -1,16 +1,11 @@
 {
   "compilerOptions": {
-    // File Layout
-    "rootDir": "./src", // Descomentado para indicar onde está seu código TS
-    "outDir": "./dist", // Descomentado para indicar para onde o JS compilado vai
+    "rootDir": "./src",
+    "outDir": "./dist",
 
-    // Environment Settings
-    "module": "nodenext", // Mantido como está
-    "moduleResolution": "nodenext", // Adicionado para funcionar com o module nodenext
-
-    // O resto das suas configurações foram mantidas
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "target": "esnext",
-    "types": [],
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,

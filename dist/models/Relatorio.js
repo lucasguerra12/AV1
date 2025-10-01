@@ -1,0 +1,41 @@
+import { Aeronave } from "./Aeronave.js";
+import * as fs from 'fs';
+export class Relatorio {
+    gerarConteudo(aeronave, nomeCliente) {
+        let conteudo = `--- Relatório Final de Aeronave ---\n\n`;
+        conteudo += `Data de Entrega: ${new Date().toLocaleDateString()}\n`;
+        conteudo += `Cliente: ${nomeCliente}\n\n`;
+        conteudo += `AERONAVE\n`;
+        conteudo += `Código: ${aeronave.codigo}\n`;
+        conteudo += `Modelo: ${aeronave.modelo}\n`;
+        conteudo += `Tipo: ${aeronave.tipo}\n\n`;
+        conteudo += `PEÇAS UTILIZADAS\n`;
+        aeronave.pecas.forEach(p => {
+            conteudo += `- ${p.nome} (Fornecedor: ${p.fornecedor}) - Status: ${p.status}\n`;
+        });
+        conteudo += `\n`;
+        conteudo += `ETAPAS REALIZADAS\n`;
+        aeronave.etapas.forEach(e => {
+            conteudo += `- ${e.nome} (Prazo: ${e.prazo.toLocaleDateString()}) - Status: ${e.status}\n`;
+        });
+        conteudo += `\n`;
+        conteudo += `RESULTADOS DOS TESTES\n`;
+        aeronave.testes.forEach(t => {
+            conteudo += `- Teste ${t.tipo}: ${t.resultado}\n`;
+        });
+        return conteudo;
+    }
+    // Salva o relatório em um arquivo de texto
+    salvar(aeronave, nomeCliente) {
+        const conteudo = this.gerarConteudo(aeronave, nomeCliente);
+        const nomeArquivo = `relatorio_${aeronave.codigo}.txt`;
+        try {
+            fs.writeFileSync(nomeArquivo, conteudo, 'utf-8');
+            console.log(`\nRelatório salvo com sucesso no arquivo: ${nomeArquivo}`);
+        }
+        catch (error) {
+            console.error("Erro ao salvar o relatório:", error);
+        }
+    }
+}
+//# sourceMappingURL=Relatorio.js.map

@@ -1,6 +1,7 @@
 import { TipoAeronave } from './enums.js';
 import { Peca } from './Peca.js';
 import { Etapa } from './Etapa.js';
+import { Teste } from './Teste.js';
 export class Aeronave {
     codigo;
     modelo;
@@ -9,6 +10,7 @@ export class Aeronave {
     alcance;
     pecas = [];
     etapas = [];
+    testes = [];
     constructor(codigo, modelo, tipo, capacidade, alcance) {
         this.codigo = codigo;
         this.modelo = modelo;
@@ -22,6 +24,9 @@ export class Aeronave {
     adicionarEtapa(etapa) {
         this.etapas.push(etapa);
     }
+    adicionarTeste(teste) {
+        this.testes.push(teste);
+    }
     detalhes() {
         console.log(`\n--- Detalhes da Aeronave [${this.codigo}] ---`);
         console.log(`Modelo: ${this.modelo}`);
@@ -32,15 +37,13 @@ export class Aeronave {
             console.log("Peças Associadas:");
             this.pecas.forEach(p => console.log(`  - ${p.nome} (${p.fornecedor}) - Status: ${p.status}`));
         }
-        else {
-            console.log("Nenhuma peça associada ainda.");
-        }
         if (this.etapas.length > 0) {
             console.log("Etapas de Produção:");
             this.etapas.forEach(e => console.log(`  - ${e.nome} (Prazo: ${e.prazo.toLocaleDateString()}) - Status: ${e.status}`));
         }
-        else {
-            console.log("Nenhuma etapa de produção iniciada.");
+        if (this.testes.length > 0) {
+            console.log("Testes Realizados:");
+            this.testes.forEach(t => console.log(`  - Teste ${t.tipo}: Resultado ${t.resultado}`));
         }
     }
 }

@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/lucasguerra12/AV1/issues"
   },
-  "homepage": "https://github.com/lucasguerra12/AV1#readme"
+  "homepage": "https://github.com/lucasguerra12/AV1#readme",
+  "devDependencies": {
+    "@types/node": "^24.6.1"
+  }
 }
