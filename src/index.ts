@@ -1,3 +1,5 @@
+// Em: src/index.ts
+
 import * as readline from 'readline';
 import { Aeronave } from './models/Aeronave.js';
 import { Peca } from './models/Peca.js';
@@ -29,6 +31,7 @@ class App {
         this.exibirMenuPrincipal();
     }
 
+    // --- MENUS ---
     private exibirMenuPrincipal() {
         console.log(`
         \n--- MENU PRINCIPAL ---
@@ -90,6 +93,7 @@ class App {
         });
     }
     
+    // --- FUNÇÕES DE CADASTRO E LISTAGEM ---
     private async cadastrarAeronave() {
         console.log('\n--- Cadastro de Nova Aeronave ---');
         const codigo = await this.askQuestion('Código: ');
@@ -158,6 +162,7 @@ class App {
         }
     }
 
+    // --- FUNÇÕES DE GERENCIAMENTO DE AERONAVE ---
     private async adicionarPeca(aeronave: Aeronave) {
         console.log('\n--- Adicionar Nova Peça ---');
         const nome = await this.askQuestion('Nome da peça: ');
@@ -195,13 +200,14 @@ class App {
         aeronave.etapas.forEach((e, i) => console.log(`${i}. ${e.nome} - Status: ${e.status}`));
         const index = parseInt(await this.askQuestion('\nNúmero da etapa a alterar: '));
 
-        if (isNaN(index) || index < 0 || index >= aeronave.etapas.length) {
-            console.log('Índice inválido.');
+        // CORREÇÃO APLICADA AQUI
+        const etapa = aeronave.etapas[index];
+        if (!etapa) {
+            console.log('Índice de etapa inválido.');
             this.exibirSubMenuGerenciamento(aeronave);
             return;
         }
 
-        const etapa = aeronave.etapas[index];
         const acao = await this.askQuestion(`Ação para '${etapa.nome}' (1-INICIAR, 2-FINALIZAR): `);
         
         if (acao === '1') {
@@ -232,11 +238,15 @@ class App {
         this.funcionarios.forEach(f => console.log(`ID: ${f.id} - ${f.nome}`));
         const funcId = parseInt(await this.askQuestion('ID do funcionário: '));
 
+        // CORREÇÃO APLICADA AQUI
         const etapa = aeronave.etapas[etIndex];
         const funcionario = this.funcionarios.find(f => f.id === funcId);
 
-        if (etapa && funcionario) etapa.associarFuncionario(funcionario);
-        else console.log('Etapa ou funcionário não encontrado.');
+        if (etapa && funcionario) {
+            etapa.associarFuncionario(funcionario);
+        } else {
+            console.log('Etapa ou funcionário não encontrado.');
+        }
         
         this.exibirSubMenuGerenciamento(aeronave);
     }
@@ -244,19 +254,20 @@ class App {
     private async adicionarTeste(aeronave: Aeronave) {
         console.log('\n--- Adicionar Resultado de Teste ---');
         const tipoStr = await this.askQuestion('Tipo (1-ELETRICO, 2-HIDRAULICO, 3-AERODINAMICO): ');
-        let tipo: TipoTeste;
+        let tipo: TipoTeste | undefined; // Informa que pode ser undefined
         if (tipoStr === '1') tipo = TipoTeste.ELETRICO;
         else if (tipoStr === '2') tipo = TipoTeste.HIDRAULICO;
-        else tipo = TipoTeste.AERODINAMICO;
+        else if (tipoStr === '3') tipo = TipoTeste.AERODINAMICO;
 
         const resStr = await this.askQuestion('Resultado (1-APROVADO, 2-REPROVADO): ');
         const resultado = resStr === '1' ? ResultadoTeste.APROVADO : ResultadoTeste.REPROVADO;
 
-        if (tipo && resultado) {
+        // CORREÇÃO APLICADA AQUI
+        if (tipo) {
             aeronave.adicionarTeste(new Teste(tipo, resultado));
             console.log(`\nTeste ${tipo} adicionado com resultado ${resultado}.`);
         } else {
-            console.log('Opção de teste ou resultado inválida.');
+            console.log('Opção de teste inválida.');
         }
         
         this.exibirSubMenuGerenciamento(aeronave);
