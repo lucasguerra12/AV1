@@ -1,0 +1,21 @@
+{
+  "name": "av1",
+  "version": "1.0.0",
+  "description": "Objetivo é desenvolver a primeira versão do software da Aerocode, um sistema de linha de comando (CLI) para gerenciar a produção de aeronaves. O sistema será desenvolvido em TypeScript",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lucasguerra12/AV1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lucasguerra12/AV1/issues"
+  },
+  "homepage": "https://github.com/lucasguerra12/AV1#readme"
+}

@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    // File Layout
+    "rootDir": "./src", // Descomentado para indicar onde está seu código TS
+    "outDir": "./dist", // Descomentado para indicar para onde o JS compilado vai
+
+    // Environment Settings
+    "module": "nodenext", // Mantido como está
+    "moduleResolution": "nodenext", // Adicionado para funcionar com o module nodenext
+
+    // O resto das suas configurações foram mantidas
+    "target": "esnext",
+    "types": [],
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "strict": true,
+    "jsx": "react-jsx",
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true
+  }
+}
