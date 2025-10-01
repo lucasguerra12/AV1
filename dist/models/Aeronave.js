@@ -1,17 +1,14 @@
 import { TipoAeronave } from './enums.js';
-import { Peca } from './Peca.js'; // Agora podemos importar a classe Peca
-// import { Etapa } from './Etapa.js';
-// import { Teste } from './Teste.js';
+import { Peca } from './Peca.js';
+import { Etapa } from './Etapa.js';
 export class Aeronave {
     codigo;
     modelo;
     tipo;
     capacidade;
     alcance;
-    // Relacionamentos: descomentamos a lista de peças
     pecas = [];
-    // etapas: Etapa[] = [];
-    // testes: Teste[] = [];
+    etapas = [];
     constructor(codigo, modelo, tipo, capacidade, alcance) {
         this.codigo = codigo;
         this.modelo = modelo;
@@ -19,10 +16,11 @@ export class Aeronave {
         this.capacidade = capacidade;
         this.alcance = alcance;
     }
-    // Novo método para adicionar uma peça à lista da aeronave
     adicionarPeca(peca) {
         this.pecas.push(peca);
-        console.log(`Peça '${peca.nome}' adicionada à aeronave ${this.codigo}.`);
+    }
+    adicionarEtapa(etapa) {
+        this.etapas.push(etapa);
     }
     detalhes() {
         console.log(`\n--- Detalhes da Aeronave [${this.codigo}] ---`);
@@ -30,15 +28,19 @@ export class Aeronave {
         console.log(`Tipo: ${this.tipo}`);
         console.log(`Capacidade: ${this.capacidade} passageiros`);
         console.log(`Alcance: ${this.alcance} km`);
-        // Exibindo as peças associadas
         if (this.pecas.length > 0) {
             console.log("Peças Associadas:");
-            this.pecas.forEach(peca => {
-                console.log(`  - ${peca.nome} (${peca.fornecedor}) - Status: ${peca.status}`);
-            });
+            this.pecas.forEach(p => console.log(`  - ${p.nome} (${p.fornecedor}) - Status: ${p.status}`));
         }
         else {
             console.log("Nenhuma peça associada ainda.");
+        }
+        if (this.etapas.length > 0) {
+            console.log("Etapas de Produção:");
+            this.etapas.forEach(e => console.log(`  - ${e.nome} (Prazo: ${e.prazo.toLocaleDateString()}) - Status: ${e.status}`));
+        }
+        else {
+            console.log("Nenhuma etapa de produção iniciada.");
         }
     }
 }
