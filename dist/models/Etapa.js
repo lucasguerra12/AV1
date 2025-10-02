@@ -1,3 +1,4 @@
+// Em: src/models/Etapa.ts
 import { StatusEtapa } from "./enums.js";
 import { Funcionario } from "./Funcionario.js";
 export class Etapa {
@@ -13,30 +14,28 @@ export class Etapa {
     iniciarEtapa() {
         if (this.status === StatusEtapa.PENDENTE) {
             this.status = StatusEtapa.ANDAMENTO;
+            console.log(`Etapa '${this.nome}' iniciada.`);
+        }
+        else {
+            console.log(`Aviso: Etapa '${this.nome}' não pôde ser iniciada (Status atual: ${this.status}).`);
         }
     }
     finalizarEtapa() {
         if (this.status === StatusEtapa.ANDAMENTO) {
             this.status = StatusEtapa.CONCLUIDA;
+            console.log(`Etapa '${this.nome}' foi concluída!`);
+        }
+        else {
+            console.log(`Aviso: Etapa '${this.nome}' não pôde ser finalizada (Status atual: ${this.status}).`);
         }
     }
     associarFuncionario(funcionario) {
-        const jaAssociado = this.funcionarios.find(f => f.id === funcionario.id);
-        if (!jaAssociado) {
+        if (!this.funcionarios.find(f => f.id === funcionario.id)) {
             this.funcionarios.push(funcionario);
-            console.log(`Funcionario '${funcionario.nome}' associado à etapa '${this.nome}'.`);
+            console.log(`Funcionário '${funcionario.nome}' associado à etapa '${this.nome}'.`);
         }
         else {
-            console.log(`Funcionario '${funcionario.nome}' já está associado a esta etapa.`);
-        }
-    }
-    listarFuncionarios() {
-        console.log(`\n--- Funcionários da Etapa: ${this.nome} ---`);
-        if (this.funcionarios.length > 0) {
-            this.funcionarios.forEach(f => console.log(`  - ID: ${f.id}, Nome: ${f.nome}, Nível: ${f.nivelPermissao}`));
-        }
-        else {
-            console.log("Nenhum funcionário associado a esta etapa.");
+            console.log(`Aviso: Funcionário '${funcionario.nome}' já está associado a esta etapa.`);
         }
     }
 }

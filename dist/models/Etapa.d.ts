@@ -9,6 +9,5 @@ export declare class Etapa {
     iniciarEtapa(): void;
     finalizarEtapa(): void;
     associarFuncionario(funcionario: Funcionario): void;
-    listarFuncionarios(): void;
 }
 //# sourceMappingURL=Etapa.d.ts.map

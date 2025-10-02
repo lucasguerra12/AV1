@@ -1,3 +1,4 @@
+// Em: src/models/Funcionario.ts
 import { NivelPermissao } from "./enums.js";
 export class Funcionario {
     id;
@@ -16,7 +17,6 @@ export class Funcionario {
         this.senha = senha;
         this.nivelPermissao = nivelPermissao;
     }
-    // Método para verificar se o usuário e a senha correspondem
     autenticar(usuario, senha) {
         return this.usuario === usuario && this.senha === senha;
     }

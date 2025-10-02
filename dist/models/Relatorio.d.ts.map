@@ -1,1 +1,1 @@
-{"version":3,"file":"Relatorio.d.ts","sourceRoot":"","sources":["../../src/models/Relatorio.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,QAAQ,EAAE,MAAM,eAAe,CAAC;AAGzC,qBAAa,SAAS;IAClB,OAAO,CAAC,aAAa;IA+Bd,MAAM,CAAC,QAAQ,EAAE,QAAQ,EAAE,WAAW,EAAE,MAAM,GAAG,IAAI;CAW/D"}
+{"version":3,"file":"Relatorio.d.ts","sourceRoot":"","sources":["../../src/models/Relatorio.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,QAAQ,EAAE,MAAM,eAAe,CAAC;AAEzC,qBAAa,SAAS;IAClB,OAAO,CAAC,aAAa;IAcd,MAAM,CAAC,QAAQ,EAAE,QAAQ,EAAE,WAAW,EAAE,MAAM,GAAG,IAAI;CAU/D"}

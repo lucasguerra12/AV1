@@ -1,3 +1,4 @@
+// Em: src/models/enums.ts
 export var TipoAeronave;
 (function (TipoAeronave) {
     TipoAeronave["COMERCIAL"] = "Comercial";

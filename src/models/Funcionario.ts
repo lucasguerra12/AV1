@@ -6,21 +6,21 @@ export class Funcionario {
     nome: string;
     telefone: string;
     endereco: string;
-    usuario: string;
+    email: string; 
     nivelPermissao: NivelPermissao;
     private senha: string;
 
-    constructor(id: number, nome: string, telefone: string, endereco: string, usuario: string, senha: string, nivelPermissao: NivelPermissao) {
+    constructor(id: number, nome: string, telefone: string, endereco: string, email: string, senha: string, nivelPermissao: NivelPermissao) {
         this.id = id;
         this.nome = nome;
         this.telefone = telefone;
         this.endereco = endereco;
-        this.usuario = usuario;
+        this.email = email; 
         this.senha = senha;
         this.nivelPermissao = nivelPermissao;
     }
 
-    autenticar(usuario: string, senha: string): boolean {
-        return this.usuario === usuario && this.senha === senha;
+    autenticar(email: string, senha: string): boolean {
+        return this.email === email && this.senha === senha;
     }
 }
