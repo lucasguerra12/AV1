@@ -5,7 +5,8 @@ import { Etapa } from './models/Etapa.js';
 import { Funcionario } from './models/Funcionario.js';
 import { Teste } from './models/Teste.js';
 import { Relatorio } from './models/Relatorio.js';
-import { TipoAeronave, TipoPeca, StatusEtapa, NivelPermissao, TipoTeste, ResultadoTeste } from './models/enums.js';
+import { TipoAeronave, TipoPeca, StatusEtapa, NivelPermissao, TipoTeste, ResultadoTeste, StatusPeca } from './models/enums.js';
+import { DatabaseService } from './services/DatabaseService.js';
 
 class App {
     private rl = readline.createInterface({
@@ -16,18 +17,26 @@ class App {
     private aeronaves: Aeronave[] = [];
     private funcionarios: Funcionario[] = [];
     private relatorio = new Relatorio();
-    private usuarioLogado: Funcionario | null = null; 
+    private usuarioLogado: Funcionario | null = null;
+    private dbService = new DatabaseService();
 
     private askQuestion(query: string): Promise<string> {
         return new Promise(resolve => this.rl.question(query, resolve));
     }
 
-    public async start() {
+    public start() {
+        const dadosCarregados = this.dbService.carregarDados();
+        this.aeronaves = dadosCarregados.aeronaves;
+        this.funcionarios = dadosCarregados.funcionarios;
         console.log('--- Bem-vindo ao Sistema AeroCode ---');
         this.exibirMenuLogin();
     }
 
-    // --- MENUS DE AUTENTICAÇÃO E PRINCIPAL ---
+    private salvarEstado() {
+        this.dbService.salvarDados(this.aeronaves, this.funcionarios);
+    }
+
+    // --- MENUS ---
     private exibirMenuLogin() {
         console.log(`
         \n--- TELA INICIAL ---
@@ -40,10 +49,7 @@ class App {
                 case '1': this.fazerLogin(); break;
                 case '2': this.registarUtilizador(); break;
                 case '9': this.rl.close(); break;
-                default:
-                    console.log('Opção inválida!');
-                    this.exibirMenuLogin();
-                    break;
+                default: console.log('Opção inválida!'); this.exibirMenuLogin(); break;
             }
         });
     }
@@ -69,60 +75,11 @@ class App {
                     console.log('Logout efetuado com sucesso.');
                     this.exibirMenuLogin();
                     break;
-                default:
-                    console.log('Opção inválida!');
-                    this.exibirMenuPrincipal();
-                    break;
+                default: console.log('Opção inválida!'); this.exibirMenuPrincipal(); break;
             }
         });
     }
 
-    // --- LÓGICA DE AUTENTICAÇÃO ---
-    private async registarUtilizador() {
-        console.log('\n--- Registo de Novo Utilizador ---');
-        const nome = await this.askQuestion('Nome completo: ');
-        const email = await this.askQuestion('Email (será o seu login): ');
-
-        if (this.funcionarios.find(f => f.email === email)) {
-            console.log('Erro: Este email já está em uso.');
-            this.exibirMenuLogin();
-            return;
-        }
-
-        const senha = await this.askQuestion('Senha: ');
-        const telefone = await this.askQuestion('Telefone: ');
-        const endereco = await this.askQuestion('Endereço: ');
-        const permStr = await this.askQuestion('Nível de Permissão (1-Admin, 2-Engenheiro, 3-Operador): ');
-        let permissao;
-        if (permStr === '1') permissao = NivelPermissao.ADMINISTRADOR;
-        else if (permStr === '2') permissao = NivelPermissao.ENGENHEIRO;
-        else permissao = NivelPermissao.OPERADOR;
-
-        const id = this.funcionarios.length + 1;
-        const novoFunc = new Funcionario(id, nome, telefone, endereco, email, senha, permissao);
-        this.funcionarios.push(novoFunc);
-
-        console.log(`\nUtilizador '${nome}' registado com sucesso! Por favor, faça o login.`);
-        this.exibirMenuLogin();
-    }
-
-    private async fazerLogin() {
-        console.log('\n--- Login ---');
-        const email = await this.askQuestion('Email: ');
-        const senha = await this.askQuestion('Senha: ');
-
-        const funcionario = this.funcionarios.find(f => f.email === email);
-
-        if (funcionario && funcionario.autenticar(email, senha)) {
-            this.usuarioLogado = funcionario;
-            console.log('\nLogin bem-sucedido!');
-            this.exibirMenuPrincipal();
-        } else {
-            console.log('\nEmail ou senha incorretos.');
-            this.exibirMenuLogin();
-        }
-    }
-    // --- LÓGICA PRINCIPAL DE AERONAVES ---
     private exibirSubMenuGerenciamento(aeronave: Aeronave) {
         console.log(`
         \n--- Gerenciando Aeronave: ${aeronave.modelo} (${aeronave.codigo}) ---
@@ -133,9 +90,9 @@ class App {
         5. Associar Funcionário a uma Etapa
         6. Adicionar Teste à Aeronave
         7. Gerar Relatório Final
+        8. Atualizar Status de Peça
         9. Voltar ao Menu Principal
         `);
-
         this.rl.question('Escolha uma ação: ', (opcao) => {
             switch (opcao) {
                 case '1': aeronave.detalhes(); this.exibirSubMenuGerenciamento(aeronave); break;
@@ -145,39 +102,56 @@ class App {
                 case '5': this.associarFuncionarioAEtapa(aeronave); break;
                 case '6': this.adicionarTeste(aeronave); break;
                 case '7': this.gerarRelatorio(aeronave); break;
+                case '8': this.atualizarStatusPeca(aeronave); break;
                 case '9': this.exibirMenuPrincipal(); break;
-                default:
-                    console.log('Opção inválida!');
-                    this.exibirSubMenuGerenciamento(aeronave);
-                    break;
+                default: console.log('Opção inválida!'); this.exibirSubMenuGerenciamento(aeronave); break;
             }
         });
     }
 
-    private listarAeronaves() {
-        console.log('\n--- Aeronaves Cadastradas ---');
-        if (this.aeronaves.length === 0) console.log('Nenhuma aeronave cadastrada.');
-        else this.aeronaves.forEach(a => console.log(`- Código: ${a.codigo}, Modelo: ${a.modelo}`));
-        this.exibirMenuPrincipal();
-    }
-
-    private listarFuncionarios() {
-        console.log('\n--- Funcionários Cadastrados ---');
-        if (this.funcionarios.length === 0) console.log('Nenhum funcionário cadastrado.');
-        else this.funcionarios.forEach(f => console.log(`- ID: ${f.id}, Nome: ${f.nome}, Nível: ${f.nivelPermissao}`));
-        this.exibirMenuPrincipal();
-    }
-    
-    private async selecionarAeronave() {
-        const codigo = await this.askQuestion('Digite o código da aeronave que deseja gerenciar: ');
-        const aeronave = this.aeronaves.find(a => a.codigo === codigo);
-        if (aeronave) this.exibirSubMenuGerenciamento(aeronave);
-        else {
-            console.log('Aeronave não encontrada.');
+    // --- AUTENTICAÇÃO ---
+    private async fazerLogin() {
+        console.log('\n--- Login ---');
+        const email = await this.askQuestion('Email: ');
+        const senha = await this.askQuestion('Senha: ');
+        const funcionario = this.funcionarios.find(f => f.autenticar(email, senha));
+        if (funcionario) {
+            this.usuarioLogado = funcionario;
+            console.log('\nLogin bem-sucedido!');
             this.exibirMenuPrincipal();
+        } else {
+            console.log('\nEmail ou senha incorretos.');
+            this.exibirMenuLogin();
         }
     }
 
+    private async registarUtilizador() {
+        console.log('\n--- Registo de Novo Utilizador ---');
+        const nome = await this.askQuestion('Nome completo: ');
+        const email = await this.askQuestion('Email (será o seu login): ');
+        if (this.funcionarios.find(f => f.email === email)) {
+            console.log('Erro: Este email já está em uso.');
+            this.exibirMenuLogin();
+            return;
+        }
+        const senha = await this.askQuestion('Senha: ');
+        const telefone = await this.askQuestion('Telefone: ');
+        const endereco = await this.askQuestion('Endereço: ');
+        const permStr = await this.askQuestion('Nível de Permissão (1-Admin, 2-Engenheiro, 3-Operador): ');
+        let permissao;
+        if (permStr === '1') permissao = NivelPermissao.ADMINISTRADOR;
+        else if (permStr === '2') permissao = NivelPermissao.ENGENHEIRO;
+        else permissao = NivelPermissao.OPERADOR;
+
+        const id = (this.funcionarios.length > 0) ? Math.max(...this.funcionarios.map(f => f.id)) + 1 : 1;
+        const novoFunc = new Funcionario(id, nome, telefone, endereco, email, senha, permissao);
+        this.funcionarios.push(novoFunc);
+        this.salvarEstado();
+        console.log(`\nUtilizador '${nome}' registado com sucesso! Por favor, faça o login.`);
+        this.exibirMenuLogin();
+    }
+
+    // --- FUNÇÕES DO MENU PRINCIPAL ---
     private async cadastrarAeronave() {
         console.log('\n--- Cadastro de Nova Aeronave ---');
         const codigo = await this.askQuestion('Código: ');
@@ -189,17 +163,44 @@ class App {
         const modelo = await this.askQuestion('Modelo: ');
         const tipoStr = await this.askQuestion('Tipo (1-COMERCIAL, 2-MILITAR): ');
         const tipo = tipoStr === '1' ? TipoAeronave.COMERCIAL : TipoAeronave.MILITAR;
-        const capacidade = parseInt(await this.askQuestion('Capacidade de passageiros: '));
+        const capacidade = parseInt(await this.askQuestion('Capacidade: '));
         const alcance = parseInt(await this.askQuestion('Alcance (km): '));
         if (isNaN(capacidade) || isNaN(alcance)) {
             console.log('Erro: Capacidade e Alcance devem ser números.');
         } else {
             this.aeronaves.push(new Aeronave(codigo, modelo, tipo, capacidade, alcance));
+            this.salvarEstado();
             console.log(`\nAeronave '${modelo}' cadastrada com sucesso!`);
         }
         this.exibirMenuPrincipal();
     }
 
+    private listarAeronaves() {
+        console.log('\n--- Aeronaves Cadastradas ---');
+        if (this.aeronaves.length === 0) console.log('Nenhuma aeronave cadastrada.');
+        else this.aeronaves.forEach(a => console.log(`- Código: ${a.codigo}, Modelo: ${a.modelo}`));
+        this.exibirMenuPrincipal();
+    }
+    
+    private listarFuncionarios() {
+        console.log('\n--- Funcionários Cadastrados ---');
+        if (this.funcionarios.length === 0) console.log('Nenhum funcionário cadastrado.');
+        else this.funcionarios.forEach(f => console.log(`- ID: ${f.id}, Nome: ${f.nome}, Nível: ${f.nivelPermissao}`));
+        this.exibirMenuPrincipal();
+    }
+
+    private async selecionarAeronave() {
+        const codigo = await this.askQuestion('Digite o código da aeronave que deseja gerenciar: ');
+        const aeronave = this.aeronaves.find(a => a.codigo === codigo);
+        if (aeronave) {
+            this.exibirSubMenuGerenciamento(aeronave);
+        } else {
+            console.log('Aeronave não encontrada.');
+            this.exibirMenuPrincipal();
+        }
+    }
+
+    // --- FUNÇÕES DO SUB-MENU DE GERENCIAMENTO ---
     private async adicionarPeca(aeronave: Aeronave) {
         console.log('\n--- Adicionar Nova Peça ---');
         const nome = await this.askQuestion('Nome da peça: ');
@@ -207,6 +208,7 @@ class App {
         const tipo = tipoStr === '1' ? TipoPeca.NACIONAL : TipoPeca.IMPORTADA;
         const fornecedor = await this.askQuestion('Fornecedor: ');
         aeronave.adicionarPeca(new Peca(nome, tipo, fornecedor));
+        this.salvarEstado();
         console.log(`\nPeça '${nome}' adicionada com sucesso!`);
         this.exibirSubMenuGerenciamento(aeronave);
     }
@@ -216,9 +218,11 @@ class App {
         const nome = await this.askQuestion('Nome da etapa: ');
         const prazoStr = await this.askQuestion('Prazo (AAAA-MM-DD): ');
         const prazo = new Date(prazoStr);
-        if (isNaN(prazo.getTime())) console.log('Erro: Data inválida.');
-        else {
+        if (isNaN(prazo.getTime())) {
+            console.log('Erro: Data inválida.');
+        } else {
             aeronave.adicionarEtapa(new Etapa(nome, prazo));
+            this.salvarEstado();
             console.log(`\nEtapa '${nome}' adicionada!`);
         }
         this.exibirSubMenuGerenciamento(aeronave);
@@ -232,30 +236,34 @@ class App {
             return;
         }
         aeronave.etapas.forEach((e, i) => console.log(`${i}. ${e.nome} - Status: ${e.status}`));
-        const index = parseInt(await this.askQuestion('\nNúmero da etapa a alterar: '));
+        const index = parseInt(await this.askQuestion('\nNúmero da etapa: '));
         const etapa = aeronave.etapas[index];
         if (!etapa) {
-            console.log('Índice de etapa inválido.');
+            console.log('Índice inválido.');
             this.exibirSubMenuGerenciamento(aeronave);
             return;
         }
         const acao = await this.askQuestion(`Ação para '${etapa.nome}' (1-INICIAR, 2-FINALIZAR): `);
         if (acao === '1') {
             if (index > 0 && aeronave.etapas[index - 1]?.status !== StatusEtapa.CONCLUIDA) {
-                console.log('Erro: A etapa anterior precisa ser concluída primeiro.');
+                console.log('Erro: A etapa anterior precisa ser concluída.');
             } else {
                 etapa.iniciarEtapa();
+                this.salvarEstado();
             }
         } else if (acao === '2') {
             etapa.finalizarEtapa();
-        } else console.log('Ação inválida.');
+            this.salvarEstado();
+        } else {
+            console.log('Ação inválida.');
+        }
         this.exibirSubMenuGerenciamento(aeronave);
     }
 
     private async associarFuncionarioAEtapa(aeronave: Aeronave) {
         console.log('\n--- Associar Funcionário a Etapa ---');
         if (this.funcionarios.length === 0 || aeronave.etapas.length === 0) {
-            console.log('É necessário ter funcionários e etapas cadastrados.');
+            console.log('É necessário ter funcionários e etapas.');
             this.exibirSubMenuGerenciamento(aeronave);
             return;
         }
@@ -268,6 +276,7 @@ class App {
         const funcionario = this.funcionarios.find(f => f.id === funcId);
         if (etapa && funcionario) {
             etapa.associarFuncionario(funcionario);
+            this.salvarEstado();
         } else {
             console.log('Etapa ou funcionário não encontrado.');
         }
@@ -285,16 +294,46 @@ class App {
         const resultado = resStr === '1' ? ResultadoTeste.APROVADO : ResultadoTeste.REPROVADO;
         if (tipo) {
             aeronave.adicionarTeste(new Teste(tipo, resultado));
-            console.log(`\nTeste ${tipo} adicionado com resultado ${resultado}.`);
+            this.salvarEstado();
+            console.log(`\nTeste ${tipo} adicionado.`);
         } else {
-            console.log('Opção de teste inválida.');
+            console.log('Opção inválida.');
+        }
+        this.exibirSubMenuGerenciamento(aeronave);
+    }
+
+    private async atualizarStatusPeca(aeronave: Aeronave) {
+        console.log('\n--- Atualizar Status de Peça ---');
+        if (aeronave.pecas.length === 0) {
+            console.log('Nenhuma peça cadastrada.');
+            this.exibirSubMenuGerenciamento(aeronave);
+            return;
+        }
+        aeronave.pecas.forEach((p, i) => console.log(`${i}. ${p.nome} - Status: ${p.status}`));
+        const index = parseInt(await this.askQuestion('\nNúmero da peça: '));
+        const peca = aeronave.pecas[index];
+        if (!peca) {
+            console.log('Índice inválido.');
+            this.exibirSubMenuGerenciamento(aeronave);
+            return;
+        }
+        console.log('Qual o novo status? (1-Em Produção, 2-Em Transporte, 3-Pronta)');
+        const statusStr = await this.askQuestion('Opção: ');
+        let novoStatus: StatusPeca | undefined;
+        if (statusStr === '1') novoStatus = StatusPeca.EM_PRODUCAO;
+        else if (statusStr === '2') novoStatus = StatusPeca.EM_TRANSPORTE;
+        else if (statusStr === '3') novoStatus = StatusPeca.PRONTA;
+        if (novoStatus) {
+            peca.atualizarStatus(novoStatus);
+            this.salvarEstado();
+        } else {
+            console.log('Opção inválida.');
         }
         this.exibirSubMenuGerenciamento(aeronave);
     }
 
     private async gerarRelatorio(aeronave: Aeronave) {
-        console.log('\n--- Gerar Relatório Final ---');
-        const nomeCliente = await this.askQuestion('Digite o nome do cliente para o relatório: ');
+        const nomeCliente = await this.askQuestion('Nome do cliente para o relatório: ');
         this.relatorio.salvar(aeronave, nomeCliente);
         this.exibirSubMenuGerenciamento(aeronave);
     }
