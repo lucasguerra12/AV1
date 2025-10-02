@@ -1,4 +1,4 @@
-// Em: src/models/Funcionario.ts
+
 import { NivelPermissao } from "./enums.js";
 
 export class Funcionario {
@@ -6,21 +6,26 @@ export class Funcionario {
     nome: string;
     telefone: string;
     endereco: string;
-    email: string; 
-    nivelPermissao: NivelPermissao;
+    email: string; // Adicionado para corresponder ao uso
     private senha: string;
+    nivelPermissao: NivelPermissao;
 
-    constructor(id: number, nome: string, telefone: string, endereco: string, email: string, senha: string, nivelPermissao: NivelPermissao) {
+    constructor(id: number, nome: string, telefone: string, endereco: string, email: string, senha?: string, nivelPermissao?: NivelPermissao) {
         this.id = id;
         this.nome = nome;
         this.telefone = telefone;
         this.endereco = endereco;
-        this.email = email; 
-        this.senha = senha;
-        this.nivelPermissao = nivelPermissao;
+        this.email = email;
+        this.senha = senha || ''; // Garante que a senha seja uma string
+        this.nivelPermissao = nivelPermissao || NivelPermissao.OPERADOR;
     }
 
-    autenticar(email: string, senha: string): boolean {
-        return this.email === email && this.senha === senha;
+    /**
+     * CORREÇÃO: O método agora verifica apenas a senha.
+     * A busca do funcionário pelo email deve ser feita antes de chamar este método.
+     * Esta é uma prática mais segura e com melhor separação de responsabilidades.
+     */
+    autenticar(senhaDigitada: string): boolean {
+        return this.senha === senhaDigitada;
     }
 }
