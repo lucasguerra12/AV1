@@ -1,4 +1,3 @@
-// Em: src/services/DatabaseService.ts
 import * as fs from 'fs';
 import { Aeronave } from '../models/Aeronave.js';
 import { Funcionario } from '../models/Funcionario.js';
@@ -13,7 +12,6 @@ export class DatabaseService {
             if (fs.existsSync(this.dbPath)) {
                 const dadosJson = fs.readFileSync(this.dbPath, 'utf-8');
                 const dados = JSON.parse(dadosJson);
-                // Agora, 'f' tem o tipo FuncionarioData, e o erro desaparece
                 const funcionarios = dados.funcionarios.map(f => new Funcionario(f.id, f.nome, f.telefone, f.endereco, f.email, f.senha || '', f.nivelPermissao));
                 const aeronaves = dados.aeronaves.map(a => {
                     const aeronave = new Aeronave(a.codigo, a.modelo, a.tipo, a.capacidade, a.alcance);

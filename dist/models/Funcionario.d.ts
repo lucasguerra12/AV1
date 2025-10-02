@@ -5,9 +5,14 @@ export declare class Funcionario {
     telefone: string;
     endereco: string;
     email: string;
-    nivelPermissao: NivelPermissao;
     private senha;
-    constructor(id: number, nome: string, telefone: string, endereco: string, email: string, senha: string, nivelPermissao: NivelPermissao);
-    autenticar(email: string, senha: string): boolean;
+    nivelPermissao: NivelPermissao;
+    constructor(id: number, nome: string, telefone: string, endereco: string, email: string, senha?: string, nivelPermissao?: NivelPermissao);
+    /**
+     * CORREÇÃO: O método agora verifica apenas a senha.
+     * A busca do funcionário pelo email deve ser feita antes de chamar este método.
+     * Esta é uma prática mais segura e com melhor separação de responsabilidades.
+     */
+    autenticar(senhaDigitada: string): boolean;
 }
 //# sourceMappingURL=Funcionario.d.ts.map

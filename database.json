@@ -43,8 +43,8 @@
       "telefone": "1",
       "endereco": "1",
       "email": "lucas@gmail.com",
-      "nivelPermissao": "Administrador",
-      "senha": ""
+      "senha": "",
+      "nivelPermissao": "Administrador"
     },
     {
       "id": 2,
@@ -52,8 +52,8 @@
       "telefone": "99999999",
       "endereco": "Rua A",
       "email": "ana@aerocode.com",
-      "nivelPermissao": "Engenheiro",
-      "senha": ""
+      "senha": "",
+      "nivelPermissao": "Engenheiro"
     },
     {
       "id": 3,
@@ -61,8 +61,17 @@
       "telefone": "1",
       "endereco": "1",
       "email": "pedro@gmail.com",
-      "nivelPermissao": "Administrador",
-      "senha": "1"
+      "senha": "1",
+      "nivelPermissao": "Administrador"
+    },
+    {
+      "id": 4,
+      "nome": "tomaz",
+      "telefone": "1",
+      "endereco": "1",
+      "email": "tomaz.com",
+      "senha": "1",
+      "nivelPermissao": "Operador"
     }
   ]
 }
