@@ -4,10 +4,10 @@ export declare class Funcionario {
     nome: string;
     telefone: string;
     endereco: string;
-    usuario: string;
+    email: string;
     nivelPermissao: NivelPermissao;
     private senha;
-    constructor(id: number, nome: string, telefone: string, endereco: string, usuario: string, senha: string, nivelPermissao: NivelPermissao);
-    autenticar(usuario: string, senha: string): boolean;
+    constructor(id: number, nome: string, telefone: string, endereco: string, email: string, senha: string, nivelPermissao: NivelPermissao);
+    autenticar(email: string, senha: string): boolean;
 }
 //# sourceMappingURL=Funcionario.d.ts.map

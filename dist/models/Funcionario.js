@@ -5,20 +5,20 @@ export class Funcionario {
     nome;
     telefone;
     endereco;
-    usuario;
+    email;
     nivelPermissao;
     senha;
-    constructor(id, nome, telefone, endereco, usuario, senha, nivelPermissao) {
+    constructor(id, nome, telefone, endereco, email, senha, nivelPermissao) {
         this.id = id;
         this.nome = nome;
         this.telefone = telefone;
         this.endereco = endereco;
-        this.usuario = usuario;
+        this.email = email;
         this.senha = senha;
         this.nivelPermissao = nivelPermissao;
     }
-    autenticar(usuario, senha) {
-        return this.usuario === usuario && this.senha === senha;
+    autenticar(email, senha) {
+        return this.email === email && this.senha === senha;
     }
 }
 //# sourceMappingURL=Funcionario.js.map

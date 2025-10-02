@@ -1,0 +1,19 @@
+--- Relatório Final de Aeronave ---
+
+Data de Entrega: 02/10/2025
+Cliente: Força Aerea Brasileira
+
+AERONAVE
+Código: T27
+Modelo: Tucano
+Tipo: Militar
+
+PEÇAS UTILIZADAS
+- Turbina PT6 (Fornecedor: Pratt & Whitney) - Status: Em Produção
+
+ETAPAS REALIZADAS
+- Montagem da Fuselagem (Prazo: 19/10/2025) - Status: Concluída
+- Instalaçao de asas (Prazo: 29/10/2025) - Status: Pendente
+
+RESULTADOS DOS TESTES
+- Teste Elétrico: Aprovado

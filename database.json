@@ -1,0 +1,68 @@
+{
+  "aeronaves": [
+    {
+      "codigo": "T27",
+      "modelo": "Tucano",
+      "tipo": "Militar",
+      "capacidade": 2,
+      "alcance": 2100,
+      "pecas": [
+        {
+          "nome": "Turbina PT6",
+          "tipo": "Importada",
+          "fornecedor": "Pratt & Whitney",
+          "status": "Em Produção"
+        }
+      ],
+      "etapas": [
+        {
+          "nome": "Montagem da Fuselagem",
+          "prazo": "2025-10-20T00:00:00.000Z",
+          "status": "Concluída",
+          "funcionarios": []
+        },
+        {
+          "nome": "Instalaçao de asas",
+          "prazo": "2025-10-30T00:00:00.000Z",
+          "status": "Pendente",
+          "funcionarios": []
+        }
+      ],
+      "testes": [
+        {
+          "tipo": "Elétrico",
+          "resultado": "Aprovado"
+        }
+      ]
+    }
+  ],
+  "funcionarios": [
+    {
+      "id": 1,
+      "nome": "lucas guerra",
+      "telefone": "1",
+      "endereco": "1",
+      "email": "lucas@gmail.com",
+      "nivelPermissao": "Administrador",
+      "senha": ""
+    },
+    {
+      "id": 2,
+      "nome": "Ana Silva",
+      "telefone": "99999999",
+      "endereco": "Rua A",
+      "email": "ana@aerocode.com",
+      "nivelPermissao": "Engenheiro",
+      "senha": ""
+    },
+    {
+      "id": 3,
+      "nome": "pedro",
+      "telefone": "1",
+      "endereco": "1",
+      "email": "pedro@gmail.com",
+      "nivelPermissao": "Administrador",
+      "senha": "1"
+    }
+  ]
+}
